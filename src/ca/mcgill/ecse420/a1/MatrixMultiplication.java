@@ -25,6 +25,7 @@ public class MatrixMultiplication {
 	 * @return the result of the multiplication
 	 * */
 	public static double[][] sequentialMultiplyMatrix(double[][] a, double[][] b) {
+		return null;
 		
 	}
 	
@@ -36,6 +37,7 @@ public class MatrixMultiplication {
 	 * @return the result of the multiplication
 	 * */
         public static double[][] parallelMultiplyMatrix(double[][] a, double[][] b) {
+        	return null;
 		
 	}
         
