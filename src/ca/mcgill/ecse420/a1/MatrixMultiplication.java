@@ -7,35 +7,38 @@ import java.util.concurrent.TimeUnit;
 
 public class MatrixMultiplication {
 
-  private static final int NUMBER_THREADS = Runtime.getRuntime().availableProcessors();
-  private static final int MATRIX_SIZE = 1000;
+  //  private static final int NUMBER_THREADS = Runtime.getRuntime().availableProcessors();
+  private static final int NUMBER_THREADS = 4;
+  private static final int MATRIX_SIZE = 2000;
   private static final int NUM_ITERATIONS = 1;
 
   public static void main(String[] args) {
 
     boolean success = true;
-    for (int i = 0; i < NUM_ITERATIONS; i++){
-      System.out.println("\n==== ITERATION " + (i+1) + "/" + NUM_ITERATIONS + " ====\n");
+    for (int i = 0; i < NUM_ITERATIONS; i++) {
+
+      System.out.println("\n==== ITERATION " + (i + 1) + "/" + NUM_ITERATIONS + " ====\n");
 
       // Generate two random matrices, same size
       double[][] a = generateRandomMatrix(MATRIX_SIZE, MATRIX_SIZE);
       double[][] b = generateRandomMatrix(MATRIX_SIZE, MATRIX_SIZE);
+      long start;
+      long stop;
 
-      long start = System.currentTimeMillis();
-
-      double[][] seqResult = sequentialMultiplyMatrix(a, b);
-      long stop = System.currentTimeMillis();
       System.out.println("###### Sequential Multiplication ######");
-      //		System.out.println("Sequential result:");
-      //		print2DMatrix(seqResult);
+      start = System.currentTimeMillis();
+      double[][] seqResult = sequentialMultiplyMatrix(a, b);
+      stop = System.currentTimeMillis();
+//      System.out.println("Sequential result:");
+//      print2DMatrix(seqResult);
       System.out.println("Sequential exec time(ms): " + (stop - start));
 
+      System.out.println("###### Parallel Multiplication ######");
       start = System.currentTimeMillis();
       double[][] paraResult = parallelMultiplyMatrix(a, b);
       stop = System.currentTimeMillis();
-      System.out.println("###### Parallel Multiplication ######");
-      //    System.out.println("Parallel result:");
-      //    print2DMatrix(paraResult);
+//      System.out.println("Parallel result:");
+//      print2DMatrix(paraResult);
       System.out.println("Parallel exec time(ms): " + (stop - start));
 
       if (!Arrays.deepEquals(seqResult, paraResult)) {
@@ -50,12 +53,13 @@ public class MatrixMultiplication {
   }
 
   /**
-   * Returns the result of a sequential matrix multiplication
-   * The two matrices are randomly generated
+   * Returns the result of a sequential matrix multiplication The two matrices are randomly
+   * generated
+   *
    * @param a is the first matrix
    * @param b is the second matrix
    * @return the result of the multiplication
-   * */
+   */
   public static double[][] sequentialMultiplyMatrix(double[][] a, double[][] b) {
     int aRows = a.length;
     int bRows = b.length;
@@ -78,12 +82,13 @@ public class MatrixMultiplication {
   }
 
   /**
-   * Returns the result of a concurrent matrix multiplication
-   * The two matrices are randomly generated
+   * Returns the result of a concurrent matrix multiplication The two matrices are randomly
+   * generated
+   *
    * @param a is the first matrix
    * @param b is the second matrix
    * @return the result of the multiplication
-   * */
+   */
   public static double[][] parallelMultiplyMatrix(double[][] a, double[][] b) {
     int aRows = a.length;
     int bRows = b.length;
@@ -116,13 +121,15 @@ public class MatrixMultiplication {
   }
 
   static class ParallelMultiply implements Runnable {
+
     private int row;
     private int column;
     private double[][] a;
     private double[][] b;
     private double[][] c;
 
-    ParallelMultiply(final int row, final int column, final double[][] a, final double[][] b, final double[][] c) {
+    ParallelMultiply(final int row, final int column, final double[][] a, final double[][] b,
+        final double[][] c) {
       this.row = row;
       this.column = column;
       this.a = a;
@@ -136,17 +143,18 @@ public class MatrixMultiplication {
       }
     }
   }
-        
+
   /**
    * Populates a matrix of given size with randomly generated integers between 0-10.
+   *
    * @param numRows number of rows
    * @param numCols number of cols
    * @return matrix
    */
-  private static double[][] generateRandomMatrix (int numRows, int numCols) {
+  private static double[][] generateRandomMatrix(int numRows, int numCols) {
     double matrix[][] = new double[numRows][numCols];
-    for (int row = 0 ; row < numRows ; row++ ) {
-      for (int col = 0 ; col < numCols ; col++ ) {
+    for (int row = 0; row < numRows; row++) {
+      for (int col = 0; col < numCols; col++) {
         matrix[row][col] = (double) ((int) (Math.random() * 10.0));
       }
     }
@@ -155,6 +163,7 @@ public class MatrixMultiplication {
 
   /**
    * Prints a formatted 2D matrix.
+   *
    * @param c matrix to print
    */
   private static void print2DMatrix(double[][] c) {
