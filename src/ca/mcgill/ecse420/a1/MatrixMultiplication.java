@@ -22,6 +22,7 @@ public class MatrixMultiplication {
       double[][] b = generateRandomMatrix(MATRIX_SIZE, MATRIX_SIZE);
 
       long start = System.currentTimeMillis();
+
       double[][] seqResult = sequentialMultiplyMatrix(a, b);
       long stop = System.currentTimeMillis();
       System.out.println("###### Sequential Multiplication ######");
