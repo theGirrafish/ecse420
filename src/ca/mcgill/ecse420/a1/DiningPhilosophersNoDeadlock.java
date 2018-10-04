@@ -26,6 +26,7 @@ public class DiningPhilosophersNoDeadlock {
       } catch (Exception e) {
       }
     }
+    executor.shutdown();
   }
 
   public static class Philosopher implements Runnable {
