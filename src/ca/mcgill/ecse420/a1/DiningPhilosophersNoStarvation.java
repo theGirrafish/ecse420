@@ -2,22 +2,23 @@ package ca.mcgill.ecse420.a1;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.locks.ReentrantLock;
 
-public class DiningPhilosophersNoDeadlock {
+public class DiningPhilosophersNoStarvation {
 
   public static void main(String[] args) {
 
     int numberOfPhilosophers = 50;
+    Chopstick[] chopsticks = new Chopstick[numberOfPhilosophers];
     Philosopher[] philosophers = new Philosopher[numberOfPhilosophers];
-    Object[] chopsticks = new Object[numberOfPhilosophers];
     ExecutorService executor = Executors.newFixedThreadPool(numberOfPhilosophers);
 
     for (int i = 0; i < numberOfPhilosophers; i++) {
-      chopsticks[i] = new Object();
+      chopsticks[i] = new Chopstick();
     }
 
     for (int i = 0; i < numberOfPhilosophers; i++) {
-      philosophers[i] = new Philosopher(chopsticks, i, numberOfPhilosophers);
+      philosophers[i] = new Philosopher(i, i > 0 ? chopsticks[i - 1] : chopsticks[chopsticks.length - 1], chopsticks[i]);
       executor.execute((philosophers[i]));
       try {
         Thread.sleep((long) (Math.random() * 10));
@@ -27,22 +28,36 @@ public class DiningPhilosophersNoDeadlock {
     executor.shutdown();
   }
 
+  public static class Chopstick {
+
+    private ReentrantLock reLock = new ReentrantLock(true);
+
+    public Chopstick() {
+    }
+
+    public boolean grabStick() {
+      if (reLock.tryLock()) {
+        return true;
+      }
+      return false;
+    }
+
+    public void dropStick() {
+      reLock.unlock();
+    }
+  }
+
   public static class Philosopher implements Runnable {
 
     int ate = 0;
     final int id;
-    final Object rightChopstick;
-    final Object leftChopstick;
+    final Chopstick rightChopstick;
+    final Chopstick leftChopstick;
 
-    Philosopher(Object[] chopsticks, int position, int numberOfPhilosophers) {
+    public Philosopher(int position, Chopstick rightChopstick, Chopstick leftChopstick) {
       this.id = position + 1;
-      if (position != 0) {
-        this.rightChopstick = chopsticks[position];
-        this.leftChopstick = chopsticks[(position + 1) % numberOfPhilosophers];
-      } else {
-        this.rightChopstick = chopsticks[(position + 1) % numberOfPhilosophers];
-        this.leftChopstick = chopsticks[position];
-      }
+      this.rightChopstick = rightChopstick;
+      this.leftChopstick = leftChopstick;
     }
 
     @Override
@@ -51,26 +66,24 @@ public class DiningPhilosophersNoDeadlock {
       long totalWait = 0;
       for (int x = 0; x < 1000; x++) {
         start = System.nanoTime();
-        synchronized (rightChopstick) {
-          try {
+        try {
+          if (rightChopstick.grabStick()) {
 //            System.out.println(id + " - Holding Right Chopstick");
             Thread.sleep((long) (Math.random() * 5));
-          } catch (Exception e) {
-          }
-          synchronized (leftChopstick) {
-            try {
+
+            if (leftChopstick.grabStick()) {
 //              System.out.println(id + " - Holding Left Chopstick");
 //              System.out.println(id + " - Eating");
               totalWait += System.nanoTime() - start;
               ate++;
               Thread.sleep((long) (Math.random() * 5));
-            } catch (Exception e) {
+              leftChopstick.dropStick();
+//              System.out.println(id + " - Released Left Chopstick");
             }
+
+            rightChopstick.dropStick();
+//            System.out.println(id + " - Released Right Chopstick");
           }
-//          System.out.println(id + " - Released Left Chopstick");
-        }
-//        System.out.println(id + " - Released Right Chopstick");
-        try {
           Thread.sleep((long) (Math.random() * 10));
         } catch (Exception e) {
         }
@@ -79,4 +92,5 @@ public class DiningPhilosophersNoDeadlock {
       System.out.println("Philosopher " + id + " ate " + ate + " times and waited for " + (double)totalWait/1000000000.0 + " seconds");
     }
   }
+
 }
