@@ -8,14 +8,16 @@ public class DiningPhilosophersNoDeadlock {
   public static void main(String[] args) {
 
     int numberOfPhilosophers = 50;
-    Philosopher[] philosophers = new Philosopher[numberOfPhilosophers];
     Object[] chopsticks = new Object[numberOfPhilosophers];
+    Philosopher[] philosophers = new Philosopher[numberOfPhilosophers];
     ExecutorService executor = Executors.newFixedThreadPool(numberOfPhilosophers);
 
+    // Initialize Chopsticks
     for (int i = 0; i < numberOfPhilosophers; i++) {
       chopsticks[i] = new Object();
     }
 
+    // Initialize Philosophers and execute the Thread
     for (int i = 0; i < numberOfPhilosophers; i++) {
       philosophers[i] = new Philosopher(chopsticks, i, numberOfPhilosophers);
       executor.execute((philosophers[i]));
@@ -37,6 +39,10 @@ public class DiningPhilosophersNoDeadlock {
 
     Philosopher(Object[] chopsticks, int position, int numberOfPhilosophers) {
       this.id = position + 1;
+
+      // Force the first philosopher to grab the chopstick to his left first
+      // As a result, we end up in a circular wait situation where each philosopher
+      // is holding on to one chopstick
       if (position != 0) {
         this.rightChopstick = chopsticks[position];
         this.leftChopstick = chopsticks[(position + 1) % numberOfPhilosophers];
@@ -50,30 +56,29 @@ public class DiningPhilosophersNoDeadlock {
     public void run() {
       long start;
       long totalWait = 0;
+
       for (int x = 0; x < 1000; x++) {
         start = System.nanoTime();
-        synchronized (rightChopstick) {
-          try {
-//            System.out.println(id + " - Holding Right Chopstick");
+
+        try {
+          // Lock the philosopher's right chopstick
+          // If chopstick is already locked, wait until available
+          synchronized (rightChopstick) {
+            System.out.println(id + " - Holding Right Chopstick");
             Thread.sleep((long) (Math.random() * 5));
-          } catch (Exception e) {
-            e.printStackTrace();
-          }
-          synchronized (leftChopstick) {
-            try {
+
+            // Lock the philosopher's left chopstick and eat
+            // If chopstick is already locked, wait until available
+            synchronized (leftChopstick) {
 //              System.out.println(id + " - Holding Left Chopstick");
 //              System.out.println(id + " - Eating");
               totalWait += System.nanoTime() - start;
               ate++;
               Thread.sleep((long) (Math.random() * 5));
-            } catch (Exception e) {
-              e.printStackTrace();
             }
+//            System.out.println(id + " - Released Left Chopstick");
           }
-//          System.out.println(id + " - Released Left Chopstick");
-        }
-//        System.out.println(id + " - Released Right Chopstick");
-        try {
+//          System.out.println(id + " - Released Right Chopstick");
           Thread.sleep((long) (Math.random() * 10));
         } catch (Exception e) {
           e.printStackTrace();

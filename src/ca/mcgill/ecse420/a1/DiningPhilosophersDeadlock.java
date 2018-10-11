@@ -12,12 +12,12 @@ public class DiningPhilosophersDeadlock {
     Philosopher[] philosophers = new Philosopher[numberOfPhilosophers];
     ExecutorService executor = Executors.newFixedThreadPool(numberOfPhilosophers);
 
-
+    // Initialize Chopsticks
     for (int i = 0; i < numberOfPhilosophers; i++) {
       chopsticks[i] = new Object();
-      System.out.println(chopsticks[i]);
     }
 
+    // Initialize Philosophers and execute the Thread
     for (int i = 0; i < numberOfPhilosophers; i++) {
       philosophers[i] = new Philosopher(chopsticks, i, numberOfPhilosophers);
       executor.execute((philosophers[i]));
@@ -44,26 +44,24 @@ public class DiningPhilosophersDeadlock {
     public void run() {
       while (true) {
         String name = Thread.currentThread().getName();
-        synchronized (rightChopstick) {
-          try {
+
+        try {
+          // Lock the philosopher's right chopstick
+          // If chopstick is already locked, wait until available
+          synchronized (rightChopstick) {
             System.out.println(name + " - Holding Right Chopstick");
             Thread.sleep((long) (Math.random() * 5));
-          } catch (Exception e) {
-            e.printStackTrace();
-          }
-          synchronized (leftChopstick) {
-            try {
+
+            // Lock the philosopher's left chopstick and eat
+            // If chopstick is already locked, wait until available
+            synchronized (leftChopstick) {
               System.out.println(name + " - Holding Left Chopstick");
               System.out.println(name + " - Eating");
               Thread.sleep((long) (Math.random() * 5));
-            } catch (Exception e) {
-              e.printStackTrace();
             }
+            System.out.println(name + " - Released Left Chopstick");
           }
-          System.out.println(name + " - Released Left Chopstick");
-        }
-        System.out.println(name + " - Released Right Chopstick");
-        try {
+          System.out.println(name + " - Released Right Chopstick");
           Thread.sleep((long) (Math.random() * 10));
         } catch (Exception e) {
           e.printStackTrace();

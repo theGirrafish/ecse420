@@ -13,10 +13,12 @@ public class DiningPhilosophersNoStarvation {
     Philosopher[] philosophers = new Philosopher[numberOfPhilosophers];
     ExecutorService executor = Executors.newFixedThreadPool(numberOfPhilosophers);
 
+    // Initialize Chopsticks
     for (int i = 0; i < numberOfPhilosophers; i++) {
       chopsticks[i] = new Chopstick();
     }
 
+    // Initialize Philosophers and execute the Thread
     for (int i = 0; i < numberOfPhilosophers; i++) {
       philosophers[i] = new Philosopher(i, i > 0 ? chopsticks[i - 1] : chopsticks[chopsticks.length - 1], chopsticks[i]);
       executor.execute((philosophers[i]));
@@ -36,10 +38,12 @@ public class DiningPhilosophersNoStarvation {
     public Chopstick() {
     }
 
+    // Attempt to pick up chopstick, if successful lock resource
     public boolean grabStick() {
       return reLock.tryLock();
     }
 
+    // Release the lock on the chopstick
     public void dropStick() {
       reLock.unlock();
     }
@@ -62,12 +66,14 @@ public class DiningPhilosophersNoStarvation {
     public void run() {
       long start;
       long totalWait = 0;
+
       for (int x = 0; x < 1000; x++) {
         start = System.nanoTime();
+
         try {
           if (rightChopstick.grabStick()) {
-//            System.out.println(id + " - Holding Right Chopstick");
-            Thread.sleep((long) (Math.random() * 5));
+            System.out.println(id + " - Holding Right Chopstick");
+//            Thread.sleep((long) (Math.random() * 5));
 
             if (leftChopstick.grabStick()) {
 //              System.out.println(id + " - Holding Left Chopstick");
@@ -88,8 +94,7 @@ public class DiningPhilosophersNoStarvation {
         }
       }
       // To see # of times each philosopher ate, comment out the other System.out.println() lines
-      System.out.println("Philosopher " + id + " ate " + ate + " times and waited for " + (double)totalWait/1000000000.0 + " seconds");
+      System.out.println("Philosopher " + id + " ate " + ate + " times and waited for " + totalWait/1000000000.0 + " seconds.");
     }
   }
-
 }
