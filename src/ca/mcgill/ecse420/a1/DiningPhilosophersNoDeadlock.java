@@ -64,7 +64,7 @@ public class DiningPhilosophersNoDeadlock {
           // Lock the philosopher's right chopstick
           // If chopstick is already locked, wait until available
           synchronized (rightChopstick) {
-            System.out.println(id + " - Holding Right Chopstick");
+//            System.out.println(id + " - Holding Right Chopstick");
             Thread.sleep((long) (Math.random() * 5));
 
             // Lock the philosopher's left chopstick and eat
