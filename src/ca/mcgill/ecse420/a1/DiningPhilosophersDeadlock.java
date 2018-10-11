@@ -8,8 +8,8 @@ public class DiningPhilosophersDeadlock {
   public static void main(String[] args) {
 
     int numberOfPhilosophers = 10;
-    Philosopher[] philosophers = new Philosopher[numberOfPhilosophers];
     Object[] chopsticks = new Object[numberOfPhilosophers];
+    Philosopher[] philosophers = new Philosopher[numberOfPhilosophers];
     ExecutorService executor = Executors.newFixedThreadPool(numberOfPhilosophers);
 
 
@@ -34,7 +34,7 @@ public class DiningPhilosophersDeadlock {
     final Object rightChopstick;
     final Object leftChopstick;
 
-    Philosopher(Object[] chopsticks, int position, int numberOfPhilosophers) {
+    public Philosopher(Object[] chopsticks, int position, int numberOfPhilosophers) {
       this.rightChopstick = chopsticks[(position + 1) % numberOfPhilosophers];
       this.leftChopstick = chopsticks[position];
     }

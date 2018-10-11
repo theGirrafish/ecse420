@@ -29,16 +29,12 @@ public class MatrixMultiplication {
       start = System.currentTimeMillis();
       double[][] seqResult = sequentialMultiplyMatrix(a, b);
       stop = System.currentTimeMillis();
-//      System.out.println("Sequential result:");
-//      print2DMatrix(seqResult);
       System.out.println("Sequential exec time(ms): " + (stop - start));
 
       System.out.println("###### Parallel Multiplication ######");
       start = System.currentTimeMillis();
       double[][] paraResult = parallelMultiplyMatrix(a, b);
       stop = System.currentTimeMillis();
-//      System.out.println("Parallel result:");
-//      print2DMatrix(paraResult);
       System.out.println("Parallel exec time(ms): " + (stop - start));
 
       if (!Arrays.deepEquals(seqResult, paraResult)) {
@@ -174,5 +170,4 @@ public class MatrixMultiplication {
       System.out.println();
     }
   }
-
 }
