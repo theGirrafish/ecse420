@@ -85,7 +85,7 @@ public class DiningPhilosophersNoDeadlock {
         }
       }
       // To see # of times each philosopher ate, comment out the other System.out.println() lines
-      System.out.println("Philosopher " + id + " ate " + ate + " times and waited for " + (double)totalWait/1000000000.0 + " seconds");
+      System.out.println("Philosopher " + id + " ate " + ate + " times and waited for " + totalWait/1000000000.0 + " seconds");
     }
   }
 }
