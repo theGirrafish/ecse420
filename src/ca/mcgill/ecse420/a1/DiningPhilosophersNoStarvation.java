@@ -23,6 +23,7 @@ public class DiningPhilosophersNoStarvation {
       try {
         Thread.sleep((long) (Math.random() * 10));
       } catch (Exception e) {
+        e.printStackTrace();
       }
     }
     executor.shutdown();
@@ -36,10 +37,7 @@ public class DiningPhilosophersNoStarvation {
     }
 
     public boolean grabStick() {
-      if (reLock.tryLock()) {
-        return true;
-      }
-      return false;
+      return reLock.tryLock();
     }
 
     public void dropStick() {
@@ -86,6 +84,7 @@ public class DiningPhilosophersNoStarvation {
           }
           Thread.sleep((long) (Math.random() * 10));
         } catch (Exception e) {
+          e.printStackTrace();
         }
       }
       // To see # of times each philosopher ate, comment out the other System.out.println() lines

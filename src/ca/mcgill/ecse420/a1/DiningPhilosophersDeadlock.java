@@ -7,7 +7,7 @@ public class DiningPhilosophersDeadlock {
 
   public static void main(String[] args) {
 
-    int numberOfPhilosophers = 10;
+    int numberOfPhilosophers = 50;
     Object[] chopsticks = new Object[numberOfPhilosophers];
     Philosopher[] philosophers = new Philosopher[numberOfPhilosophers];
     ExecutorService executor = Executors.newFixedThreadPool(numberOfPhilosophers);
@@ -24,6 +24,7 @@ public class DiningPhilosophersDeadlock {
       try {
         Thread.sleep((long) (Math.random() * 10));
       } catch (Exception e) {
+        e.printStackTrace();
       }
     }
     executor.shutdown();
@@ -48,6 +49,7 @@ public class DiningPhilosophersDeadlock {
             System.out.println(name + " - Holding Right Chopstick");
             Thread.sleep((long) (Math.random() * 5));
           } catch (Exception e) {
+            e.printStackTrace();
           }
           synchronized (leftChopstick) {
             try {
@@ -55,6 +57,7 @@ public class DiningPhilosophersDeadlock {
               System.out.println(name + " - Eating");
               Thread.sleep((long) (Math.random() * 5));
             } catch (Exception e) {
+              e.printStackTrace();
             }
           }
           System.out.println(name + " - Released Left Chopstick");
@@ -63,6 +66,7 @@ public class DiningPhilosophersDeadlock {
         try {
           Thread.sleep((long) (Math.random() * 10));
         } catch (Exception e) {
+          e.printStackTrace();
         }
       }
     }

@@ -25,6 +25,7 @@ public class Deadlock {
       synchronized (lock1) {
         System.out.println("Lock 1");
         try {
+          // Gives time for other thread to acquire lock on its first resource
           Thread.sleep(100);
         } catch (InterruptedException e) {
           e.printStackTrace();

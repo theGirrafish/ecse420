@@ -37,6 +37,7 @@ public class MatrixMultiplication {
       stop = System.currentTimeMillis();
       System.out.println("Parallel exec time(ms): " + (stop - start));
 
+      // Check if results from parallel and sequential are the same
       if (!Arrays.deepEquals(seqResult, paraResult)) {
         success = false;
         break;
@@ -63,10 +64,12 @@ public class MatrixMultiplication {
     int aColumns = a[0].length;
     double[][] c = new double[aRows][bColumns];
 
+    // Throw exception if matrix dimensions are invalid
     if (aColumns != bRows) {
       throw new ArithmeticException("Invalid matrix dimensions");
     }
 
+    // Naive O(n^3) method for matrix multiplication
     for (int i = 0; i < aRows; i++) {
       for (int j = 0; j < bColumns; j++) {
         for (int k = 0; k < aColumns; k++) {
@@ -92,20 +95,25 @@ public class MatrixMultiplication {
     int aColumns = a[0].length;
     double[][] c = new double[aRows][bColumns];
 
+    // Throw exception if matrix dimensions are invalid
     if (aColumns != bRows) {
       throw new ArithmeticException("Invalid matrix dimensions");
     }
 
     try {
+      // Create thread pool
       ExecutorService executor = Executors.newFixedThreadPool(NUMBER_THREADS);
 
       for (int i = 0; i < aRows; i++) {
         for (int j = 0; j < bColumns; j++) {
+          // Spawn each row operation in its own thread
           executor.execute(new ParallelMultiply(i, j, a, b, c));
         }
       }
 
       executor.shutdown();
+
+      // Wait for all threads to finish before continuing
       executor.awaitTermination(MATRIX_SIZE, TimeUnit.SECONDS);
       System.out.println("Terminated successfully: " + executor.isTerminated());
 
@@ -124,8 +132,7 @@ public class MatrixMultiplication {
     private double[][] b;
     private double[][] c;
 
-    ParallelMultiply(final int row, final int column, final double[][] a, final double[][] b,
-        final double[][] c) {
+    ParallelMultiply(final int row, final int column, final double[][] a, final double[][] b, final double[][] c) {
       this.row = row;
       this.column = column;
       this.a = a;
@@ -157,17 +164,4 @@ public class MatrixMultiplication {
     return matrix;
   }
 
-  /**
-   * Prints a formatted 2D matrix.
-   *
-   * @param c matrix to print
-   */
-  private static void print2DMatrix(double[][] c) {
-    for (int i = 0; i < c.length; i++) {
-      for (int j = 0; j < c[i].length; j++) {
-        System.out.print(c[i][j] + " ");
-      }
-      System.out.println();
-    }
-  }
 }

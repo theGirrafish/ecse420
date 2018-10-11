@@ -22,6 +22,7 @@ public class DiningPhilosophersNoDeadlock {
       try {
         Thread.sleep((long) (Math.random() * 10));
       } catch (Exception e) {
+        e.printStackTrace();
       }
     }
     executor.shutdown();
@@ -56,6 +57,7 @@ public class DiningPhilosophersNoDeadlock {
 //            System.out.println(id + " - Holding Right Chopstick");
             Thread.sleep((long) (Math.random() * 5));
           } catch (Exception e) {
+            e.printStackTrace();
           }
           synchronized (leftChopstick) {
             try {
@@ -65,6 +67,7 @@ public class DiningPhilosophersNoDeadlock {
               ate++;
               Thread.sleep((long) (Math.random() * 5));
             } catch (Exception e) {
+              e.printStackTrace();
             }
           }
 //          System.out.println(id + " - Released Left Chopstick");
@@ -73,6 +76,7 @@ public class DiningPhilosophersNoDeadlock {
         try {
           Thread.sleep((long) (Math.random() * 10));
         } catch (Exception e) {
+          e.printStackTrace();
         }
       }
       // To see # of times each philosopher ate, comment out the other System.out.println() lines
