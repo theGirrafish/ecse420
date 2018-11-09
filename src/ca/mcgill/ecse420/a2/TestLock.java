@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 public class TestLock {
 
-    private static final int NUMBER_THREADS = 20;
+    private static final int NUMBER_THREADS = 50;
     private static int cnt = 0;
 
     private static FilterLock filterLock = new FilterLock(NUMBER_THREADS);
@@ -74,8 +74,8 @@ public class TestLock {
         @Override
         public void run() {
             try {
-                while (cnt < 100) {
-                    Thread.sleep(1);
+                if (cnt < 5) {
+                    Thread.sleep(10);
                     cnt++;
                 }
             } catch (InterruptedException e) {
@@ -94,8 +94,8 @@ public class TestLock {
         public void run() {
             try {
                 filterLock.lock();
-                while (cnt < 100) {
-                    Thread.sleep(1);
+                if (cnt < 5) {
+                    Thread.sleep(10);
                     cnt++;
                 }
             } catch (InterruptedException e) {
@@ -116,8 +116,8 @@ public class TestLock {
         public void run() {
             try {
                 bakeryLock.lock();
-                while (cnt < 100) {
-                    Thread.sleep(1);
+                if (cnt < 5) {
+                    Thread.sleep(10);
                     cnt++;
                 }
             } catch (InterruptedException e) {
