@@ -36,7 +36,6 @@ public class TestList {
             this.cnt = cnt;
         }
 
-        @Override
         public void run() {
             for (int i = 0; i < THREAD_ITEMS; i++) {
                 if (!fineList.add(cnt + i)) {
