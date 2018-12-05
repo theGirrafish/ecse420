@@ -1,6 +1,6 @@
 package ca.mcgill.ecse420.a3;
 
-public class Tester {
+public class TestQueue {
 
   public static void main(String[] args) {
     LockBasedQueue<Integer> lbq = new LockBasedQueue<>(4);

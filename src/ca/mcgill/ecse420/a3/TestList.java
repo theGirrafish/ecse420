@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 public class TestList {
     private static final int NUMBER_THREADS = 4;
-    private static final int NUM_ITEMS = 100;
+    private static final int NUM_ITEMS = 1000;
     private static final int THREAD_ITEMS = NUM_ITEMS / NUMBER_THREADS;
 
     private static FineList<Integer> fineList = new FineList<>();
@@ -42,7 +42,7 @@ public class TestList {
                     System.out.println("[FAIL] Could not add: " + (cnt + i));
                 }
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(3);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

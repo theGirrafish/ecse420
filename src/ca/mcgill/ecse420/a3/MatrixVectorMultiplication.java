@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 public class MatrixVectorMultiplication {
     private static final int NUM_THREADS = 4;
-    private static final int MATRIX_SIZE = 20000;
+    private static final int MATRIX_SIZE = 6000;
 
     public static void main(String[] args) {
         long start;
@@ -48,7 +48,6 @@ public class MatrixVectorMultiplication {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
         return res;
     }
 
@@ -101,7 +100,7 @@ public class MatrixVectorMultiplication {
         double[][] matrix = new double[numRows][numCols];
         for (int row = 0; row < numRows; row++) {
             for (int col = 0; col < numCols; col++) {
-                matrix[row][col] = (double) ((int) (rand.nextInt(9) + 1));
+                matrix[row][col] = (double) ((int) (rand.nextInt(10) + 1));
             }
         }
         return matrix;
@@ -111,7 +110,7 @@ public class MatrixVectorMultiplication {
         Random rand = new Random();
         double[] vector = new double[numElems];
         for (int i = 0; i < numElems; i++) {
-            vector[i] = (double) ((int) (rand.nextInt(9) + 1));
+            vector[i] = (double) ((int) (rand.nextInt(10) + 1));
         }
         return vector;
     }
