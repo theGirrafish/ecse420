@@ -1,4 +1,6 @@
-out
-.idea
+*out/
+
 *.iml
-.editorconfig
+*.class
+*.idea
+*.editorconfig
