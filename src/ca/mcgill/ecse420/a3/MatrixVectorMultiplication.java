@@ -8,29 +8,37 @@ import java.util.concurrent.TimeUnit;
 
 public class MatrixVectorMultiplication {
     private static final int NUM_THREADS = 4;
-    private static final int MATRIX_SIZE = 6000;
+    private static final int MATRIX_SIZE = 2000;
+    private static final int NUM_ITER = 10;
+    private static final Random RAND = new Random();
 
     public static void main(String[] args) {
-        long start;
-        double[][] A = generateRandomMatrix(MATRIX_SIZE, MATRIX_SIZE);
-        double[] b = generateRandomVector(MATRIX_SIZE);
+        double speed_ave = 0;
+        for (int i = 0; i < NUM_ITER; i++) {
+            long start;
+            double[][] A = generateRandomMatrix(MATRIX_SIZE, MATRIX_SIZE);
+            double[] b = generateRandomVector(MATRIX_SIZE);
 
-        start = System.nanoTime();
-        double[] res1 = sequentialMultiply(A, b);
-        double end1 = (double) (System.nanoTime() - start);
-        System.out.println("Elapsed time: " + end1);
+            start = System.nanoTime();
+            double[] res1 = sequentialMultiply(A, b);
+            double end1 = (double) (System.nanoTime() - start);
+            System.out.println("Elapsed time: " + end1);
 
-        start = System.nanoTime();
-        double[] res2 = parallelMultiply(A, b);
-        double end2 = (double) (System.nanoTime() - start);
-        System.out.println("Elapsed time: " + end2);
+            start = System.nanoTime();
+            double[] res2 = parallelMultiply(A, b);
+            double end2 = (double) (System.nanoTime() - start);
+            System.out.println("Elapsed time: " + end2);
 
-        double speed = Math.round(end1 / end2 * 100.0) / 100.0;
+            double speed = Math.round(end1 / end2 * 100.0) / 100.0;
+            speed_ave += speed;
 
-        System.out.println(Arrays.toString(res1));
-        System.out.println(Arrays.toString(res2));
-        System.out.println("Same result: " + Arrays.equals(res1, res2));
-        System.out.println("Parallel was " + speed + "x faster than sequential!");
+            System.out.println(Arrays.toString(res1));
+            System.out.println(Arrays.toString(res2));
+            System.out.println("Same result: " + Arrays.equals(res1, res2));
+            System.out.println("Parallel was " + speed + "x faster than sequential!");
+        }
+        speed_ave /= NUM_ITER;
+        System.out.println("\nAverage speedup was: " + (Math.round(speed_ave * 100.0) / 100.0) + "x for " + NUM_ITER + " iterations");
     }
 
     public static double[] parallelMultiply(double[][] matrix, double[] vector) {
@@ -44,7 +52,7 @@ public class MatrixVectorMultiplication {
 
         executor.shutdown();
         try {
-            executor.awaitTermination(300, TimeUnit.SECONDS);
+            executor.awaitTermination(10, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -71,7 +79,9 @@ public class MatrixVectorMultiplication {
         @Override
         public void run() {
 
+            // Starting at rowNum, skip num threads every iteration
             for (int i = rowNum; i < rows; i += NUM_THREADS) {
+                // Same algorithm as sequential multiply
                 res[i] = 0;
                 for (int j = 0; j < cols; j++) {
                     res[i] += matrix[i][j] * vector[j];
@@ -96,21 +106,19 @@ public class MatrixVectorMultiplication {
     }
 
     private static double[][] generateRandomMatrix(int numRows, int numCols) {
-        Random rand = new Random();
         double[][] matrix = new double[numRows][numCols];
         for (int row = 0; row < numRows; row++) {
             for (int col = 0; col < numCols; col++) {
-                matrix[row][col] = (double) ((int) (rand.nextInt(10) + 1));
+                matrix[row][col] = (double) ((int) (RAND.nextInt(10) + 1));
             }
         }
         return matrix;
     }
 
     private static double[] generateRandomVector(int numElems) {
-        Random rand = new Random();
         double[] vector = new double[numElems];
         for (int i = 0; i < numElems; i++) {
-            vector[i] = (double) ((int) (rand.nextInt(10) + 1));
+            vector[i] = (double) ((int) (RAND.nextInt(10) + 1));
         }
         return vector;
     }
